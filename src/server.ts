@@ -1,25 +1,27 @@
 import express from "express";
 import cors from "cors";
 import dotenv from "dotenv";
-
-import apiRouter from "./api";
+import { loadRoutes } from "./server/loadRoutes";
 
 dotenv.config();
 
 const app = express();
 const PORT = process.env.PORT ?? 3333;
 
-app.use(cors());
-app.use(express.json());
+async function bootstrap(): Promise<void> {
+  app.use(cors());
+  app.use(express.json());
 
-// Rotas
-app.use("/api", apiRouter);
+  const routes = await loadRoutes();
+  app.use("/api", routes);
 
-// Health-check
-app.get("/", (_req, res) => {
-  res.json({ status: "ok", message: "Oficina API running" });
-});
+  app.get("/", (_req, res) => {
+    res.json({ status: "ok", message: "Oficina API running" });
+  });
 
-app.listen(PORT, () => {
-  console.log(`✅  Servidor rodando em http://localhost:${PORT}`);
-});
+  app.listen(PORT, () => {
+    console.log(`✅  Servidor rodando em http://localhost:${PORT}`);
+  });
+}
+
+void bootstrap();
