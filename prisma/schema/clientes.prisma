@@ -1,0 +1,20 @@
+enum TipoCliente {
+  PESSOA_FISICA
+  JURIDICA
+}
+
+model Cliente {
+  id        Int          @id @default(autoincrement())
+  nome      String
+  telefone  String
+  email     String
+  tipo      TipoCliente
+  cpf       String?      @unique
+  cnpj      String?      @unique
+  endereco  String
+  createdAt DateTime     @default(now())
+
+  carros Carro[]
+
+  @@map("clientes")
+}

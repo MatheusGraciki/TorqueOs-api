@@ -1,0 +1,11 @@
+model Peca {
+  id        Int      @id @default(autoincrement())
+  nome      String
+  valor     Decimal  @db.Decimal(10, 2)
+  estoque   Int      @default(0)
+  createdAt DateTime @default(now())
+
+  servicoPecas ServicoPeca[]
+
+  @@map("pecas")
+}

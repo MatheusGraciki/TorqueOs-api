@@ -1,0 +1,13 @@
+model ServicoPeca {
+  id         Int     @id @default(autoincrement())
+  servicoId  Int
+  pecaId     Int
+  quantidade Int     @default(1)
+  valorUnit  Decimal @db.Decimal(10, 2)
+
+  servico Servico @relation(fields: [servicoId], references: [id], onDelete: Cascade)
+  peca    Peca    @relation(fields: [pecaId], references: [id])
+
+  @@unique([servicoId, pecaId])
+  @@map("servico_pecas")
+}

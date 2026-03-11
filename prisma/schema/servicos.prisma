@@ -1,0 +1,17 @@
+model Servico {
+  id                Int      @id @default(autoincrement())
+  carroId           Int
+  descricaoServico  String
+  valorHora         Decimal  @db.Decimal(10, 2)
+  horasTrabalhadas  Decimal  @db.Decimal(10, 2)
+  custoPecas        Decimal  @db.Decimal(10, 2) @default(0)
+  valorTotal        Decimal  @db.Decimal(10, 2) @default(0)
+  dataServico       DateTime
+  observacoes       String?
+  createdAt         DateTime @default(now())
+
+  carro        Carro         @relation(fields: [carroId], references: [id], onDelete: Cascade)
+  servicoPecas ServicoPeca[]
+
+  @@map("servicos")
+}

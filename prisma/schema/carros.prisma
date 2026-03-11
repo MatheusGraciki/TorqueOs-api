@@ -1,0 +1,16 @@
+model Carro {
+  id            Int      @id @default(autoincrement())
+  clienteId     Int
+  marca         String
+  modelo        String
+  ano           Int
+  placa         String   @unique
+  cor           String
+  quilometragem Int      @default(0)
+  createdAt     DateTime @default(now())
+
+  cliente  Cliente   @relation(fields: [clienteId], references: [id], onDelete: Cascade)
+  servicos Servico[]
+
+  @@map("carros")
+}

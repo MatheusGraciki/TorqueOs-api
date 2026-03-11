@@ -1,0 +1,58 @@
+import { Request, Response } from "express";
+import {
+  createServicoService,
+  deleteServicoService,
+  getServicoById,
+  getServicos as getServicosService,
+  updateServicoService,
+} from "./service";
+import { ServicoInput } from "./types";
+
+export const getServicos = async (_req: Request, res: Response) => {
+  try {
+    const servicos = await getServicosService();
+    res.json(servicos);
+  } catch (err) {
+    res.status(500).json({ error: "Erro ao listar serviços", details: err });
+  }
+};
+
+export const getServico = async (req: Request, res: Response) => {
+  try {
+    const servico = await getServicoById(parseInt(req.params.id));
+    if (!servico) {
+      res.status(404).json({ error: "Serviço não encontrado" });
+      return;
+    }
+    res.json(servico);
+  } catch (err) {
+    res.status(500).json({ error: "Erro ao buscar serviço", details: err });
+  }
+};
+
+export const createServico = async (req: Request, res: Response) => {
+  try {
+    const servico = await createServicoService(req.body as ServicoInput);
+    res.status(201).json(servico);
+  } catch (err) {
+    res.status(400).json({ error: "Erro ao criar serviço", details: err });
+  }
+};
+
+export const updateServico = async (req: Request, res: Response) => {
+  try {
+    const servico = await updateServicoService(parseInt(req.params.id), req.body as ServicoInput);
+    res.json(servico);
+  } catch (err) {
+    res.status(400).json({ error: "Erro ao atualizar serviço", details: err });
+  }
+};
+
+export const deleteServico = async (req: Request, res: Response) => {
+  try {
+    await deleteServicoService(parseInt(req.params.id));
+    res.status(204).send();
+  } catch (err) {
+    res.status(400).json({ error: "Erro ao deletar serviço", details: err });
+  }
+};
