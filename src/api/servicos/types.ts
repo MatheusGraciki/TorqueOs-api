@@ -5,6 +5,7 @@ export type ServicoPecaInput = {
 };
 
 export type ServicoInput = {
+  empresaId?: number;
   carroId: number;
   descricaoServico: string;
   valorHora: number;

@@ -1,16 +1,19 @@
 model Carro {
   id            Int      @id @default(autoincrement())
+  empresaId     Int
   clienteId     Int
   marca         String
   modelo        String
   ano           Int
-  placa         String   @unique
+  placa         String
   cor           String
   quilometragem Int      @default(0)
   createdAt     DateTime @default(now())
 
+  empresa  Empresa   @relation(fields: [empresaId], references: [id], onDelete: Cascade)
   cliente  Cliente   @relation(fields: [clienteId], references: [id], onDelete: Cascade)
   servicos Servico[]
 
+  @@unique([empresaId, placa])
   @@map("carros")
 }

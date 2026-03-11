@@ -1,19 +1,21 @@
 import prisma from "../../lib/prisma";
 import { PecaCreateInput, PecaUpdateInput } from "./types";
 
-export const getPecas = () =>
+export const getPecas = (empresaId: number) =>
   prisma.peca.findMany({
+    where: { empresaId },
     orderBy: { nome: "asc" },
   });
 
-export const findPecaById = (id: number) =>
+export const findPecaById = (id: number, empresaId: number) =>
   prisma.peca.findUnique({
-    where: { id },
+    where: { id, empresaId },
   });
 
-export const createPeca = (data: PecaCreateInput) => prisma.peca.create({ data });
+export const createPeca = (data: PecaCreateInput, empresaId: number) =>
+  prisma.peca.create({ data: { ...data, empresaId } });
 
-export const updatePeca = (id: number, data: PecaUpdateInput) =>
-  prisma.peca.update({ where: { id }, data });
+export const updatePeca = (id: number, data: PecaUpdateInput, empresaId: number) =>
+  prisma.peca.update({ where: { id, empresaId }, data });
 
-export const deletePeca = (id: number) => prisma.peca.delete({ where: { id } });
+export const deletePeca = (id: number, empresaId: number) => prisma.peca.delete({ where: { id, empresaId } });

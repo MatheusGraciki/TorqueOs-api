@@ -5,16 +5,20 @@ enum TipoCliente {
 
 model Cliente {
   id        Int          @id @default(autoincrement())
+  empresaId Int
   nome      String
   telefone  String
   email     String
   tipo      TipoCliente
-  cpf       String?      @unique
-  cnpj      String?      @unique
+  cpf       String?
+  cnpj      String?
   endereco  String
   createdAt DateTime     @default(now())
 
+  empresa Empresa @relation(fields: [empresaId], references: [id], onDelete: Cascade)
   carros Carro[]
 
+  @@unique([empresaId, cpf])
+  @@unique([empresaId, cnpj])
   @@map("clientes")
 }

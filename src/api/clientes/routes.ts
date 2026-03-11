@@ -1,4 +1,5 @@
 import { Router } from "express";
+import { sessionMiddleware } from "../../middlewares/session";
 import {
   createCliente,
   deleteCliente,
@@ -8,6 +9,8 @@ import {
 } from "./controller";
 
 const router = Router();
+
+router.use(sessionMiddleware);
 
 router.get("/", getClientes);
 router.get("/:id", getCliente);

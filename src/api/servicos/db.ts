@@ -1,8 +1,9 @@
 import prisma from "../../lib/prisma";
 import { ServicoInput } from "./types";
 
-export const getServicos = () =>
+export const getServicos = (empresaId: number) =>
   prisma.servico.findMany({
+    where: { empresaId },
     orderBy: { dataServico: "desc" },
     include: {
       carro: { include: { cliente: true } },
@@ -10,18 +11,19 @@ export const getServicos = () =>
     },
   });
 
-export const findServicoById = (id: number) =>
+export const findServicoById = (id: number, empresaId: number) =>
   prisma.servico.findUnique({
-    where: { id },
+    where: { id, empresaId },
     include: {
       carro: { include: { cliente: true } },
       servicoPecas: { include: { peca: true } },
     },
   });
 
-export const createServico = (data: ServicoInput, custoPecas: number, valorTotal: number) =>
+export const createServico = (data: ServicoInput, custoPecas: number, valorTotal: number, empresaId: number) =>
   prisma.servico.create({
     data: {
+      empresaId,
       carroId: data.carroId,
       descricaoServico: data.descricaoServico,
       valorHora: data.valorHora,
@@ -43,11 +45,17 @@ export const createServico = (data: ServicoInput, custoPecas: number, valorTotal
     },
   });
 
-export const updateServico = async (id: number, data: ServicoInput, custoPecas: number, valorTotal: number) => {
+export const updateServico = async (
+  id: number,
+  data: ServicoInput,
+  custoPecas: number,
+  valorTotal: number,
+  empresaId: number,
+) => {
   await prisma.servicoPeca.deleteMany({ where: { servicoId: id } });
 
   return prisma.servico.update({
-    where: { id },
+    where: { id, empresaId },
     data: {
       carroId: data.carroId,
       descricaoServico: data.descricaoServico,
@@ -71,4 +79,4 @@ export const updateServico = async (id: number, data: ServicoInput, custoPecas: 
   });
 };
 
-export const deleteServico = (id: number) => prisma.servico.delete({ where: { id } });
+export const deleteServico = (id: number, empresaId: number) => prisma.servico.delete({ where: { id, empresaId } });

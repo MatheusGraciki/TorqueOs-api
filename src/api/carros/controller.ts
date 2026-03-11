@@ -10,7 +10,7 @@ import { CarroCreateInput, CarroUpdateInput } from "./types";
 
 export const getCarros = async (_req: Request, res: Response) => {
   try {
-    const carros = await getCarrosService();
+    const carros = await getCarrosService(_req.empresaId as number);
     res.json(carros);
   } catch (err) {
     res.status(500).json({ error: "Erro ao listar carros", details: err });
@@ -19,7 +19,8 @@ export const getCarros = async (_req: Request, res: Response) => {
 
 export const getCarro = async (req: Request, res: Response) => {
   try {
-    const carro = await getCarroById(parseInt(req.params.id));
+    const carroId = Number(req.params.id);
+    const carro = await getCarroById(carroId, req.empresaId as number);
     if (!carro) {
       res.status(404).json({ error: "Carro não encontrado" });
       return;
@@ -32,7 +33,7 @@ export const getCarro = async (req: Request, res: Response) => {
 
 export const createCarro = async (req: Request, res: Response) => {
   try {
-    const carro = await createCarroService(req.body as CarroCreateInput);
+    const carro = await createCarroService(req.body as CarroCreateInput, req.empresaId as number);
     res.status(201).json(carro);
   } catch (err) {
     res.status(400).json({ error: "Erro ao criar carro", details: err });
@@ -41,7 +42,12 @@ export const createCarro = async (req: Request, res: Response) => {
 
 export const updateCarro = async (req: Request, res: Response) => {
   try {
-    const carro = await updateCarroService(parseInt(req.params.id), req.body as CarroUpdateInput);
+    const carroId = Number(req.params.id);
+    const carro = await updateCarroService(
+      carroId,
+      req.body as CarroUpdateInput,
+      req.empresaId as number,
+    );
     res.json(carro);
   } catch (err) {
     res.status(400).json({ error: "Erro ao atualizar carro", details: err });
@@ -50,7 +56,8 @@ export const updateCarro = async (req: Request, res: Response) => {
 
 export const deleteCarro = async (req: Request, res: Response) => {
   try {
-    await deleteCarroService(parseInt(req.params.id));
+    const carroId = Number(req.params.id);
+    await deleteCarroService(carroId, req.empresaId as number);
     res.status(204).send();
   } catch (err) {
     res.status(400).json({ error: "Erro ao deletar carro", details: err });

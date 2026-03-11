@@ -1,4 +1,5 @@
 import { Router } from "express";
+import { sessionMiddleware } from "../../middlewares/session";
 import {
   createPeca,
   deletePeca,
@@ -8,6 +9,8 @@ import {
 } from "./controller";
 
 const router = Router();
+
+router.use(sessionMiddleware);
 
 router.get("/", getPecas);
 router.get("/:id", getPeca);

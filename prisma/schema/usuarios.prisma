@@ -1,13 +1,13 @@
-model Peca {
+model Usuario {
   id        Int      @id @default(autoincrement())
   empresaId Int
   nome      String
-  valor     Decimal  @db.Decimal(10, 2)
-  estoque   Int      @default(0)
+  email     String   @unique
+  senhaHash String
+  ativo     Boolean  @default(true)
   createdAt DateTime @default(now())
 
   empresa Empresa @relation(fields: [empresaId], references: [id], onDelete: Cascade)
-  servicoPecas ServicoPeca[]
 
-  @@map("pecas")
+  @@map("usuarios")
 }
