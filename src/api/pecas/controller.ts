@@ -19,7 +19,7 @@ export const getPecas = async (_req: Request, res: Response) => {
 
 export const getPeca = async (req: Request, res: Response) => {
   try {
-    const peca = await getPecaById(parseInt(req.params.id), req.empresaId as number);
+    const peca = await getPecaById(Number(req.params.id), req.empresaId as number);
     if (!peca) {
       res.status(404).json({ error: "Peça não encontrada" });
       return;
@@ -42,7 +42,7 @@ export const createPeca = async (req: Request, res: Response) => {
 export const updatePeca = async (req: Request, res: Response) => {
   try {
     const peca = await updatePecaService(
-      parseInt(req.params.id),
+      Number(req.params.id),
       req.body as PecaUpdateInput,
       req.empresaId as number,
     );
@@ -54,7 +54,7 @@ export const updatePeca = async (req: Request, res: Response) => {
 
 export const deletePeca = async (req: Request, res: Response) => {
   try {
-    await deletePecaService(parseInt(req.params.id), req.empresaId as number);
+    await deletePecaService(Number(req.params.id), req.empresaId as number);
     res.status(204).send();
   } catch (err) {
     res.status(400).json({ error: "Erro ao deletar peça", details: err });

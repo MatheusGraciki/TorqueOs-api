@@ -1,4 +1,11 @@
-import { Prisma } from "@prisma/client";
+export type CarroCreateInput = {
+	clienteId: number;
+	marca: string;
+	modelo: string;
+	ano: number;
+	placa: string;
+	cor: string;
+	quilometragem?: number;
+};
 
-export type CarroCreateInput = Prisma.CarroUncheckedCreateInput;
-export type CarroUpdateInput = Prisma.CarroUncheckedUpdateInput;
+export type CarroUpdateInput = Partial<CarroCreateInput>;

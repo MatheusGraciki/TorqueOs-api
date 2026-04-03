@@ -1,21 +1,82 @@
-import prisma from "../../lib/prisma";
+import { sql } from "../../lib/neon";
 import { PecaCreateInput, PecaUpdateInput } from "./types";
 
 export const getPecas = (empresaId: number) =>
-  prisma.peca.findMany({
-    where: { empresaId },
-    orderBy: { nome: "asc" },
-  });
+  sql`
+    SELECT
+      id,
+      empresa_id AS "empresaId",
+      nome,
+      valor,
+      estoque,
+      created_at AS "createdAt"
+    FROM pecas
+    WHERE empresa_id = ${empresaId}
+    ORDER BY nome ASC
+  `;
 
-export const findPecaById = (id: number, empresaId: number) =>
-  prisma.peca.findUnique({
-    where: { id, empresaId },
-  });
+export const findPecaById = async (id: number, empresaId: number) => {
+  const rows = await sql`
+    SELECT
+      id,
+      empresa_id AS "empresaId",
+      nome,
+      valor,
+      estoque,
+      created_at AS "createdAt"
+    FROM pecas
+    WHERE id = ${id}
+      AND empresa_id = ${empresaId}
+    LIMIT 1
+  `;
 
-export const createPeca = (data: PecaCreateInput, empresaId: number) =>
-  prisma.peca.create({ data: { ...data, empresaId } });
+  return rows[0] ?? null;
+};
 
-export const updatePeca = (id: number, data: PecaUpdateInput, empresaId: number) =>
-  prisma.peca.update({ where: { id, empresaId }, data });
+export const createPeca = async (data: PecaCreateInput, empresaId: number) => {
+  const rows = await sql`
+    INSERT INTO pecas (empresa_id, nome, valor, estoque)
+    VALUES (${empresaId}, ${data.nome}, ${data.valor}, ${data.estoque ?? 0})
+    RETURNING
+      id,
+      empresa_id AS "empresaId",
+      nome,
+      valor,
+      estoque,
+      created_at AS "createdAt"
+  `;
 
-export const deletePeca = (id: number, empresaId: number) => prisma.peca.delete({ where: { id, empresaId } });
+  return rows[0] ?? null;
+};
+
+export const updatePeca = async (id: number, data: PecaUpdateInput, empresaId: number) => {
+  const rows = await sql`
+    UPDATE pecas
+    SET
+      nome = COALESCE(${data.nome ?? null}, nome),
+      valor = COALESCE(${data.valor ?? null}, valor),
+      estoque = COALESCE(${data.estoque ?? null}, estoque)
+    WHERE id = ${id}
+      AND empresa_id = ${empresaId}
+    RETURNING
+      id,
+      empresa_id AS "empresaId",
+      nome,
+      valor,
+      estoque,
+      created_at AS "createdAt"
+  `;
+
+  return rows[0] ?? null;
+};
+
+export const deletePeca = async (id: number, empresaId: number) => {
+  const rows = await sql`
+    DELETE FROM pecas
+    WHERE id = ${id}
+      AND empresa_id = ${empresaId}
+    RETURNING id
+  `;
+
+  return rows[0] ?? null;
+};

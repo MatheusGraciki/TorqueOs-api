@@ -44,6 +44,22 @@
       const form = document.getElementById("form-login");
       const erro = document.getElementById("erro");
 
+      function formatRetryAfter(seconds) {
+        const totalSeconds = Math.max(0, Number(seconds) || 0);
+        const minutes = Math.floor(totalSeconds / 60);
+        const remainingSeconds = totalSeconds % 60;
+
+        if (minutes > 0 && remainingSeconds > 0) {
+          return `${minutes}m ${remainingSeconds}s`;
+        }
+
+        if (minutes > 0) {
+          return `${minutes}m`;
+        }
+
+        return `${remainingSeconds}s`;
+      }
+
       form.addEventListener("submit", async (event) => {
         event.preventDefault();
         erro.textContent = "";
@@ -59,7 +75,21 @@
         });
 
         if (!resposta.ok) {
-          erro.textContent = "Email ou senha inválidos.";
+          let payload = null;
+
+          try {
+            payload = await resposta.json();
+          } catch {
+            payload = null;
+          }
+
+          if (resposta.status === 429) {
+            const waitTime = formatRetryAfter(payload?.retryAfterSeconds);
+            erro.textContent = `Muitas tentativas. Tente novamente em ${waitTime}.`;
+            return;
+          }
+
+          erro.textContent = payload?.error || "Email ou senha inválidos.";
           return;
         }
 

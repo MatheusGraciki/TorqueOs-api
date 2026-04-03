@@ -19,7 +19,7 @@ export const getServicos = async (_req: Request, res: Response) => {
 
 export const getServico = async (req: Request, res: Response) => {
   try {
-    const servico = await getServicoById(parseInt(req.params.id), req.empresaId as number);
+    const servico = await getServicoById(Number(req.params.id), req.empresaId as number);
     if (!servico) {
       res.status(404).json({ error: "Serviço não encontrado" });
       return;
@@ -42,7 +42,7 @@ export const createServico = async (req: Request, res: Response) => {
 export const updateServico = async (req: Request, res: Response) => {
   try {
     const servico = await updateServicoService(
-      parseInt(req.params.id),
+      Number(req.params.id),
       req.body as ServicoInput,
       req.empresaId as number,
     );
@@ -54,7 +54,7 @@ export const updateServico = async (req: Request, res: Response) => {
 
 export const deleteServico = async (req: Request, res: Response) => {
   try {
-    await deleteServicoService(parseInt(req.params.id), req.empresaId as number);
+    await deleteServicoService(Number(req.params.id), req.empresaId as number);
     res.status(204).send();
   } catch (err) {
     res.status(400).json({ error: "Erro ao deletar serviço", details: err });

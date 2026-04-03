@@ -1,4 +1,7 @@
-import { Prisma } from "@prisma/client";
+export type PecaCreateInput = {
+	nome: string;
+	valor: number;
+	estoque?: number;
+};
 
-export type PecaCreateInput = Prisma.PecaUncheckedCreateInput;
-export type PecaUpdateInput = Prisma.PecaUncheckedUpdateInput;
+export type PecaUpdateInput = Partial<PecaCreateInput>;

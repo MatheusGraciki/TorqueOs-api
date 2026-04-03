@@ -19,7 +19,7 @@ export const getClientes = async (_req: Request, res: Response) => {
 
 export const getCliente = async (req: Request, res: Response) => {
   try {
-    const cliente = await getClienteById(parseInt(req.params.id), req.empresaId as number);
+    const cliente = await getClienteById(Number(req.params.id), req.empresaId as number);
     if (!cliente) {
       res.status(404).json({ error: "Cliente não encontrado" });
       return;
@@ -55,12 +55,12 @@ export const createCliente = async (req: Request, res: Response) => {
       return;
     }
 
-    if (body.tipo === "PESSOA_FISICA" && !body?.cpf?.trim()) {
+    if (body.tipo === "pessoa_fisica" && !body?.cpf?.trim()) {
       res.status(400).json({ error: "Erro ao criar cliente", details: { message: "CPF é obrigatório para pessoa física" } });
       return;
     }
 
-    if (body.tipo === "JURIDICA" && !body?.cnpj?.trim()) {
+    if (body.tipo === "pessoa_juridica" && !body?.cnpj?.trim()) {
       res.status(400).json({ error: "Erro ao criar cliente", details: { message: "CNPJ é obrigatório para pessoa jurídica" } });
       return;
     }
@@ -91,7 +91,7 @@ export const createCliente = async (req: Request, res: Response) => {
 export const updateCliente = async (req: Request, res: Response) => {
   try {
     const cliente = await updateClienteService(
-      parseInt(req.params.id),
+      Number(req.params.id),
       req.body as ClienteUpdateInput,
       req.empresaId as number,
     );
@@ -103,7 +103,7 @@ export const updateCliente = async (req: Request, res: Response) => {
 
 export const deleteCliente = async (req: Request, res: Response) => {
   try {
-    await deleteClienteService(parseInt(req.params.id), req.empresaId as number);
+    await deleteClienteService(Number(req.params.id), req.empresaId as number);
     res.status(204).send();
   } catch (err) {
     res.status(400).json({ error: "Erro ao deletar cliente", details: err });

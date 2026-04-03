@@ -19,8 +19,23 @@ async function bootstrap(): Promise<void> {
     }),
   );
   app.use(express.json());
+  // Redis session store
+  const { redis } = await import('./lib/redis');
+  const { RedisStore } = await import('connect-redis');
+  const sessionSerializer = {
+    stringify: JSON.stringify,
+    parse: (value: unknown) => {
+      if (typeof value === "string") {
+        return JSON.parse(value);
+      }
+
+      return value;
+    },
+  };
+
   app.use(
     session({
+      store: new RedisStore({ client: redis, serializer: sessionSerializer }),
       name: "oficina.sid",
       secret: process.env.SESSION_SECRET ?? "oficina-dev-secret",
       resave: false,
@@ -32,7 +47,7 @@ async function bootstrap(): Promise<void> {
         sameSite: "lax",
         maxAge: 1000 * 60 * 60 * 3,
       },
-    }),
+    })
   );
 
   const apiRouter = await loadRoutes();

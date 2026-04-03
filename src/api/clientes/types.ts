@@ -1,4 +1,4 @@
-export type TipoCliente = "PESSOA_FISICA" | "JURIDICA";
+export type TipoCliente = "pessoa_fisica" | "pessoa_juridica";
 
 export type ClienteCreateInput = {
   empresaId?: number;
