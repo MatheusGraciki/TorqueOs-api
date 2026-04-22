@@ -14,7 +14,7 @@ const webDir = path.resolve(__dirname, "web");
 async function bootstrap(): Promise<void> {
   app.use(
     cors({
-      origin: true,
+      origin: process.env.CORS_ORIGIN || "http://localhost:8080",
       credentials: true,
     }),
   );
