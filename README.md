@@ -12,6 +12,16 @@ Backend em Node.js + TypeScript com acesso direto ao PostgreSQL via SQL e migrat
 1. Copie `.env.example` para `.env` e ajuste os valores.
 2. Instale dependencias:
 
+### Sessao e CORS em producao
+
+Se o frontend estiver em `http://localhost:8080` e a API na VPS com HTTPS, configure:
+
+```bash
+CORS_ORIGIN=http://localhost:8080,https://apitorqueos.graciki.systems
+SESSION_COOKIE_SECURE=true
+SESSION_COOKIE_SAMESITE=none
+```
+
 ```bash
 npm install
 ```

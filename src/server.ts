@@ -12,9 +12,27 @@ const PORT = process.env.PORT ?? 3333;
 const webDir = path.resolve(__dirname, "web");
 
 async function bootstrap(): Promise<void> {
+  app.set("trust proxy", 1);
+
+  const allowedOrigins = (process.env.CORS_ORIGIN || "http://localhost:8080")
+    .split(",")
+    .map((origin) => origin.trim())
+    .filter(Boolean);
+
+  const cookieSecure =
+    (process.env.SESSION_COOKIE_SECURE ?? (process.env.NODE_ENV === "production" ? "true" : "false")) === "true";
+  const cookieSameSite = (process.env.SESSION_COOKIE_SAMESITE ?? "lax") as "lax" | "strict" | "none";
+
   app.use(
     cors({
-      origin: process.env.CORS_ORIGIN || "http://localhost:8080",
+      origin: (origin, callback) => {
+        if (!origin || allowedOrigins.includes(origin)) {
+          callback(null, true);
+          return;
+        }
+
+        callback(new Error("CORS blocked"));
+      },
       credentials: true,
     }),
   );
@@ -43,8 +61,8 @@ async function bootstrap(): Promise<void> {
       rolling: true,
       cookie: {
         httpOnly: true,
-        secure: process.env.NODE_ENV === "production",
-        sameSite: "lax",
+        secure: cookieSecure,
+        sameSite: cookieSameSite,
         maxAge: 1000 * 60 * 60 * 3,
       },
     })

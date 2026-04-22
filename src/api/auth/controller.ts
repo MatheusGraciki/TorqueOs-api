@@ -85,7 +85,7 @@ export const logout = (req: Request, res: Response) => {
 
 export const me = (req: Request, res: Response) => {
   if (req.session.usuario == null) {
-    res.redirect("/login");
+    res.status(401).json({ error: "Nao autenticado" });
     return;
   }
 
