@@ -72,9 +72,8 @@ export async function loadRoutes(): Promise<Router> {
 
     for (const routeFile of routeFiles) {
       try {
-        const moduleUrl = pathToFileURL(routeFile).href;
-        const loaded = (await import(moduleUrl)) as RouteExport;
-        const routeModule = loaded.default;
+        const loaded = require(routeFile) as RouteExport;
+        const routeModule = loaded.default ?? loaded;
 
         if (!isRouterCandidate(routeModule)) {
           console.warn(`[routes] Ignorado: ${routeFile} (export default não é Router)`);
